@@ -1,0 +1,63 @@
+# ============================================================================
+# Spring AI & Agents Workshop — Local Infrastructure
+# ============================================================================
+# Starts Ollama (local LLMs) and Redis Stack (vector database) for the workshop.
+# Usage:
+#   docker compose up -d
+#   docker compose exec ollama ollama pull llama3.2
+#   docker compose exec ollama ollama pull nomic-embed-text
+# ============================================================================
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # Ollama — Local LLM Runtime
+  # Exposes the OpenAI-compatible API on port 11434.
+  # GPU acceleration is enabled via the NVIDIA runtime when available.
+  # ---------------------------------------------------------------------------
+  ollama:
+    image: ollama/ollama:latest
+    container_name: workshop-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+#    deploy:
+#      resources:
+#        reservations:
+#          devices:
+#            - driver: nvidia
+#              count: all
+#              capabilities: [gpu]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:11434/api/tags || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # Redis Stack — Vector Database for RAG (Lab 2+)
+  # Bundles Redis + RediSearch (vector similarity) + RedisJSON
+  # RedisInsight UI available at http://localhost:8001
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis/redis-stack:latest
+    container_name: workshop-redis
+    ports:
+      - "6379:6379"   # Redis
+      - "8001:8001"   # RedisInsight UI
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  ollama-models:
+    driver: local
+  redis-data:
+    driver: local

@@ -1,0 +1,27 @@
+# =============================================================================
+# Lab 3 — Agentic Workflows with Embabel
+# =============================================================================
+spring:
+  application:
+    name: lab-3-agentic-workflows
+
+  ai:
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        model: llama3.2
+        options:
+          temperature: 0.4
+          num-predict: 2048
+
+# Embabel configuration
+embabel:
+  agent:
+    # The platform automatically discovers @Agent beans in the Spring context.
+    # GOAP planner settings:
+    planning:
+      max-depth: 10              # Max actions in a single plan
+      timeout-seconds: 30        # Planning timeout
+
+server:
+  port: 8083

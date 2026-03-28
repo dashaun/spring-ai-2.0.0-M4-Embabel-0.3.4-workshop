@@ -1,0 +1,7 @@
+.idea
+.opencode/
+opencode.jsonc
+labs/lab-1-hello-llm/target/
+labs/lab-2-rag-agent/target/
+labs/lab-3-agentic-workflows/target/
+labs/lab-4-developer-sidekick/target/

@@ -1,0 +1,59 @@
+# =============================================================================
+# Lab 4 — Developer Sidekick: The Full Stack
+# =============================================================================
+spring:
+  application:
+    name: lab-4-developer-sidekick
+
+  ai:
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        model: llama3.2
+        options:
+          temperature: 0.3
+          num-predict: 4096
+      embedding:
+        model: nomic-embed-text
+
+    vectorstore:
+      qdrant:
+        host: localhost
+        port: 6334
+        collection-name: sidekick-knowledge
+        initialize-schema: true
+
+    # -------------------------------------------------------------------------
+    # MCP Client Configuration
+    # -------------------------------------------------------------------------
+    # These are the MCP tool servers the agent can call.
+    # JavaClaw-style: each server exposes tools via the MCP protocol.
+    # -------------------------------------------------------------------------
+    mcp:
+      client:
+        stdio:
+          servers:
+            # A filesystem MCP server — lets the agent read/write project files
+            filesystem:
+              command: npx
+              args:
+                - "-y"
+                - "@modelcontextprotocol/server-filesystem"
+                - "./workspace"    # Sandboxed to the workspace directory
+
+# Embabel planner configuration
+embabel:
+  agent:
+    planning:
+      max-depth: 15
+      timeout-seconds: 60
+
+# Workspace for the agent to operate in (sandboxed)
+workshop:
+  workspace:
+    path: ./workspace
+  docs:
+    path: classpath:docs/
+
+server:
+  port: 8084
