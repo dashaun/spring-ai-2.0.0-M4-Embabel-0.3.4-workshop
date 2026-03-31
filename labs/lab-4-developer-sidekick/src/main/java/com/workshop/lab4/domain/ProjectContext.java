@@ -13,4 +13,9 @@ public record ProjectContext(
         String javaVersion,
         List<String> dependencies,
         Map<String, String> relevantFiles
-) {}
+) {
+    public ProjectContext {
+        if (dependencies == null) dependencies = List.of();
+        if (relevantFiles == null) relevantFiles = Map.of();
+    }
+}

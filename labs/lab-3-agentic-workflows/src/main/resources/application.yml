@@ -9,14 +9,16 @@ spring:
     ollama:
       base-url: http://localhost:11434
       chat:
-        model: llama3.2
+        model: qwen2.5-coder:1.5b
         options:
           temperature: 0.4
-          num-predict: 2048
+          num-predict: 4096
+          format: json
 
 # Embabel configuration
 embabel:
-  agent:
+    models:
+      default-llm: qwen2.5-coder:1.5b
     # The platform automatically discovers @Agent beans in the Spring context.
     # GOAP planner settings:
     planning:

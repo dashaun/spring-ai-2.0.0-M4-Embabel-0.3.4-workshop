@@ -10,6 +10,7 @@ import com.workshop.lab4.domain.ProjectContext;
 import com.workshop.lab4.domain.TaskRequest;
 import com.workshop.lab4.domain.TaskResult;
 import com.workshop.lab4.tools.FileSystemTools;
+import org.springframework.ai.chat.client.ChatClient;
 
 import java.io.IOException;
 import java.util.List;
@@ -49,9 +50,11 @@ import java.util.List;
 public class DeveloperSidekickAgent {
 
     private final FileSystemTools fileSystemTools;
+    private final ChatClient chatClient;
 
-    public DeveloperSidekickAgent(FileSystemTools fileSystemTools) {
+    public DeveloperSidekickAgent(FileSystemTools fileSystemTools, ChatClient.Builder chatClientBuilder) {
         this.fileSystemTools = fileSystemTools;
+        this.chatClient = chatClientBuilder.build();
     }
 
     /**
@@ -88,19 +91,21 @@ public class DeveloperSidekickAgent {
 
                 Task to accomplish: %s
 
-                Return a JSON object: {
-                  "projectName": "...",
-                  "buildTool": "maven|gradle",
-                  "javaVersion": "...",
-                  "dependencies": ["..."],
-                  "relevantFiles": { "filename": "purpose" }
-                }
+                You MUST respond with ONLY a single-line JSON object on one line, no newlines inside the JSON.
+                Example: {"projectName":"my-app","buildTool":"maven","javaVersion":"17","dependencies":["spring-boot-starter-web"],"relevantFiles":{"src/main/java/com/example/App.java":"main app"}}
+                Respond with ONLY the JSON on a single line. No markdown, no explanation.
                 """.formatted(fileList, buildFile, request.description()),
                 ProjectContext.class);
     }
 
     /**
      * Action 2: Generate code based on the task and project context.
+     *
+     * <p>Uses Embabel's {@code createObject} for small JSON metadata (filename,
+     * explanation) and Spring AI's {@code ChatClient} for the actual code content
+     * as plain text. This avoids asking the LLM to embed multi-line Java source
+     * inside a JSON string — something small models like qwen2.5-coder:1.5b cannot do
+     * reliably.</p>
      */
     @Action(description = "Generate Java code that follows the project's existing conventions")
     public GeneratedCode generateCode(ProjectContext context, TaskRequest request, Ai ai)
@@ -117,31 +122,56 @@ public class DeveloperSidekickAgent {
             } catch (IOException ignored) {}
         }
 
-        return ai.withDefaultLlm().createObject("""
-                You are a senior Java developer. Generate code for this task:
+        // Step 1: Get metadata as JSON (small, parseable)
+        record CodePlan(String filename, String explanation) {}
+        CodePlan plan = ai.withDefaultLlm().createObject("""
+                You are a senior Java developer planning code generation.
 
                 Task: %s
                 Project: %s (Java %s, %s)
-                Dependencies: %s
+                Package: com.example
 
-                Existing code for reference (follow these conventions):
-                %s
-
-                Generate production-quality code. Return JSON: {
-                  "filename": "src/main/java/.../FileName.java",
-                  "content": "full file content",
-                  "explanation": "what this code does and why",
-                  "newDependencies": ["groupId:artifactId if needed"]
-                }
+                Respond with ONLY a single-line JSON: {"filename":"src/main/java/com/example/SomeFile.java","explanation":"what this code does"}
                 """.formatted(
                 request.description(),
                 context.projectName(),
                 context.javaVersion(),
-                context.buildTool(),
-                String.join(", ", context.dependencies()),
-                existingCode.toString()
-        ),
-                GeneratedCode.class);
+                context.buildTool()
+        ), CodePlan.class);
+
+        // Step 2: Generate actual code as plain text via ChatClient
+        // This avoids the impossible task of putting Java source inside JSON.
+        String codeContent = chatClient.prompt()
+                .user("""
+                        You are a senior Java developer. Write ONLY the Java source file, nothing else.
+                        No markdown fences, no explanation — just the raw .java file content.
+
+                        Task: %s
+                        Filename: %s
+                        Project: %s (Java %s, %s)
+                        Dependencies: %s
+
+                        Existing code for reference (follow these conventions):
+                        %s
+
+                        Write the complete Java source file now:
+                        """.formatted(
+                        request.description(),
+                        plan.filename(),
+                        context.projectName(),
+                        context.javaVersion(),
+                        context.buildTool(),
+                        String.join(", ", context.dependencies()),
+                        existingCode.toString()))
+                .call()
+                .content();
+
+        return new GeneratedCode(
+                plan.filename(),
+                codeContent,
+                plan.explanation(),
+                List.of()
+        );
     }
 
     /**
@@ -156,10 +186,16 @@ public class DeveloperSidekickAgent {
     )
     @Action(description = "Write generated code to the filesystem and report results")
     public TaskResult applyAndVerify(GeneratedCode code, TaskRequest request) throws IOException {
+        // Strip markdown fences if the LLM wrapped the code
+        String content = code.content();
+        if (content.startsWith("```")) {
+            content = content.replaceFirst("^```[\\w]*\\n?", "").replaceFirst("\\n?```$", "");
+        }
+
         // Write the generated file
         fileSystemTools.writeFile(
                 request.projectPath() + "/" + code.filename(),
-                code.content()
+                content
         );
 
         return new TaskResult(

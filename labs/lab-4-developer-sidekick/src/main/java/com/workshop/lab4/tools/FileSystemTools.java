@@ -34,7 +34,7 @@ public class FileSystemTools {
         Path dir = Path.of(workspacePath).resolve(relativePath).normalize();
         validatePath(dir);
 
-        try (var stream = Files.walk(dir, 5)) {
+        try (var stream = Files.walk(dir, 10)) {
             return stream
                     .filter(Files::isRegularFile)
                     .map(p -> dir.relativize(p).toString())

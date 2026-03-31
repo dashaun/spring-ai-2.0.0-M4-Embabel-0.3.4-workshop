@@ -3,7 +3,6 @@ package com.workshop.lab3.agent;
 import com.embabel.agent.api.annotation.Action;
 import com.embabel.agent.api.annotation.AchievesGoal;
 import com.embabel.agent.api.annotation.Agent;
-import com.embabel.agent.api.annotation.Export;
 import com.embabel.agent.api.common.Ai;
 import com.workshop.lab3.domain.CodeAnalysis;
 import com.workshop.lab3.domain.CodeReviewRequest;
@@ -62,9 +61,7 @@ public class CodeReviewAgent {
                 ```
                 %s
                 ```
-
-                Respond with a JSON object matching this structure:
-                { "summary": "...", "issues": [...], "suggestions": [...], "qualityScore": 0-100 }
+                
                 """.formatted(request.language(), request.context(), request.sourceCode()),
                 CodeAnalysis.class);
     }
@@ -75,10 +72,7 @@ public class CodeReviewAgent {
      * <p>The {@code @AchievesGoal} annotation tells the planner that
      * reaching this action satisfies the agent's objective.</p>
      */
-    @AchievesGoal(
-            description = "Produce a human-readable code review report",
-            export = @Export(remote = true, name = "codeReviewReport")
-    )
+    @AchievesGoal(description = "Produce a human-readable code review report")
     @Action(description = "Compile analysis into a developer-friendly review report")
     public ReviewReport writeReport(CodeAnalysis analysis, Ai ai) {
         return ai.withDefaultLlm().createObject("""
@@ -90,19 +84,12 @@ public class CodeReviewAgent {
                 Issues found: %s
                 Suggestions: %s
 
-                Write the report with:
-                - A short title
-                - A body with specific, actionable feedback (use code examples)
-                - A verdict: APPROVE, REQUEST_CHANGES, or NEEDS_DISCUSSION
-
-                Respond as JSON: { "title": "...", "body": "...", "verdict": "..." }
                 """.formatted(
                 analysis.qualityScore(),
                 analysis.summary(),
                 String.join(", ", analysis.issues()),
                 String.join(", ", analysis.suggestions())
-        ),
-                ReviewReport.class);
+        ), ReviewReport.class);
     }
 
     // =========================================================================

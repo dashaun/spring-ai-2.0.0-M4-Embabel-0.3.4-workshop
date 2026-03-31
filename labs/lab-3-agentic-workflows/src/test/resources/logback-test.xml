@@ -1,0 +1,19 @@
+<configuration>
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level  %-40logger{40} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- Silence noisy LLM retry/parse warnings — these are expected when the
+       local model occasionally truncates JSON; retries resolve them silently. -->
+  <logger name="com.embabel.common.ai.converters.FilteringJacksonOutputConverter" level="OFF"/>
+  <logger name="com.embabel.agent.spi.support.springai.ExceptionWrappingConverter" level="OFF"/>
+  <logger name="com.embabel.agent.spi.support.LlmDataBindingProperties"            level="OFF"/>
+  <logger name="com.embabel.agent.core.support.DefaultActionMethodManager"          level="OFF"/>
+  <logger name="com.embabel.agent.spi.loop.support.ActionRunner"                   level="OFF"/>
+
+  <root level="INFO">
+    <appender-ref ref="CONSOLE"/>
+  </root>
+</configuration>

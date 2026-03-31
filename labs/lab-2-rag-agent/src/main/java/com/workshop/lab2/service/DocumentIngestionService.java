@@ -22,13 +22,13 @@ import java.util.List;
  *
  * <p>On startup, reads every document from {@code classpath:docs/},
  * splits them into chunks, generates embeddings via Ollama's
- * {@code nomic-embed-text}, and stores them in Qdrant.</p>
+ * {@code nomic-embed-text}, and stores them in Redis Stack.</p>
  *
  * <h2>Exercises</h2>
  * <ol>
  *   <li>Add your own Markdown files to {@code src/main/resources/docs/}.</li>
  *   <li>Experiment with different chunk sizes and overlap settings.</li>
- *   <li>Open the Qdrant dashboard and inspect the stored vectors.</li>
+ *   <li>Open RedisInsight (<a href="http://localhost:8001">http://localhost:8001</a>) and inspect the stored vectors.</li>
  * </ol>
  */
 @Service

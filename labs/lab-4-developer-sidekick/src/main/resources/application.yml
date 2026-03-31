@@ -5,11 +5,24 @@ spring:
   application:
     name: lab-4-developer-sidekick
 
+  # Jackson 3 (Spring Boot 4) is strict about control chars in JSON strings.
+  # Allow unescaped newlines so multiline curl payloads work out of the box.
+  jackson:
+    parser-features:
+      ALLOW_UNQUOTED_CONTROL_CHARS: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      username: default
+      password:
+
   ai:
     ollama:
       base-url: http://localhost:11434
       chat:
-        model: llama3.2
+        model: qwen2.5-coder:1.5b
         options:
           temperature: 0.3
           num-predict: 4096
@@ -17,10 +30,8 @@ spring:
         model: nomic-embed-text
 
     vectorstore:
-      qdrant:
-        host: localhost
-        port: 6334
-        collection-name: sidekick-knowledge
+      redis:
+        index-name: sidekick-knowledge
         initialize-schema: true
 
     # -------------------------------------------------------------------------
@@ -32,7 +43,7 @@ spring:
     mcp:
       client:
         stdio:
-          servers:
+          connections:
             # A filesystem MCP server — lets the agent read/write project files
             filesystem:
               command: npx
@@ -41,12 +52,13 @@ spring:
                 - "@modelcontextprotocol/server-filesystem"
                 - "./workspace"    # Sandboxed to the workspace directory
 
-# Embabel planner configuration
+# Embabel configuration
 embabel:
-  agent:
-    planning:
-      max-depth: 15
-      timeout-seconds: 60
+  models:
+    default-llm: qwen2.5-coder:1.5b
+  planning:
+    max-depth: 15
+    timeout-seconds: 60
 
 # Workspace for the agent to operate in (sandboxed)
 workshop:

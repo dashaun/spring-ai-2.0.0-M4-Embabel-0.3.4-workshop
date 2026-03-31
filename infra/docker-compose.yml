@@ -4,7 +4,7 @@
 # Starts Ollama (local LLMs) and Redis Stack (vector database) for the workshop.
 # Usage:
 #   docker compose up -d
-#   docker compose exec ollama ollama pull llama3.2
+#   docker compose exec ollama ollama pull qwen2.5-coder:1.5b
 #   docker compose exec ollama ollama pull nomic-embed-text
 # ============================================================================
 

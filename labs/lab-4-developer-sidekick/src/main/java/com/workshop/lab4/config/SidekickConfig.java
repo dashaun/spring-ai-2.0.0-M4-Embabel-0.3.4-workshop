@@ -1,11 +1,12 @@
 package com.workshop.lab4.config;
 
+import com.embabel.agent.api.common.AgentPlatformTypedOps;
 import com.embabel.agent.core.AgentPlatform;
-import com.embabel.agent.domain.io.UserInput;
+import com.embabel.agent.core.ProcessOptions;
 import com.workshop.lab4.domain.TaskRequest;
 import com.workshop.lab4.domain.TaskResult;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.context.annotation.Bean;
@@ -29,29 +30,31 @@ public class SidekickConfig {
     private final AgentPlatform agentPlatform;
     private final ChatClient ragClient;
 
-    public SidekickConfig(AgentPlatform agentPlatform, ChatClient ragClient) {
+    public SidekickConfig(AgentPlatform agentPlatform, ChatClient.Builder builder, VectorStore vectorStore) {
         this.agentPlatform = agentPlatform;
-        this.ragClient = ragClient;
-    }
-
-    /**
-     * RAG-powered documentation chat — carries forward from Lab 2.
-     */
-    @Bean
-    ChatClient ragClient(ChatClient.Builder builder, VectorStore vectorStore) {
-        return builder
+        this.ragClient = builder
                 .defaultSystem("""
                     You are a developer documentation assistant.
                     Answer using ONLY the provided context from project docs.
                     If unsure, say so and suggest where to look.
                     """)
                 .defaultAdvisors(
-                        new QuestionAnswerAdvisor(vectorStore, SearchRequest.builder()
-                                .similarityThreshold(0.7)
-                                .topK(5)
-                                .build())
+                        QuestionAnswerAdvisor.builder(vectorStore)
+                                .searchRequest(SearchRequest.builder()
+                                        .similarityThreshold(0.7)
+                                        .topK(5)
+                                        .build())
+                                .build()
                 )
                 .build();
+    }
+
+    /**
+     * RAG-powered documentation chat — carries forward from Lab 2.
+     */
+    @Bean
+    ChatClient ragClient() {
+        return this.ragClient;
     }
 
     /**
@@ -80,9 +83,7 @@ public class SidekickConfig {
      */
     @PostMapping("/task")
     public TaskResult executeTask(@RequestBody TaskRequest request) {
-        return agentPlatform.runFor(
-                new UserInput(request.description()),
-                TaskResult.class
-        );
+        return new AgentPlatformTypedOps(agentPlatform)
+                .transform(request, TaskResult.class, ProcessOptions.DEFAULT);
     }
 }

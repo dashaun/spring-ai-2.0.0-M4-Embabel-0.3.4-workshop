@@ -5,7 +5,7 @@ A hands-on workshop where Java developers build AI agents that run entirely on t
 ## What You'll Build
 
 1. **Lab 1** — A Spring Boot app that chats with a local LLM via Ollama
-2. **Lab 2** — A RAG-powered documentation agent backed by Qdrant
+2. **Lab 2** — A RAG-powered documentation agent backed by Redis
 3. **Lab 3** — A code review agent using Embabel's goal-oriented planning
 4. **Lab 4** — A full developer sidekick that reads your project and writes code to disk
 
@@ -16,7 +16,7 @@ A hands-on workshop where Java developers build AI agents that run entirely on t
 cd infra && docker compose up -d
 
 # 2. Pull models
-docker compose exec ollama ollama pull llama3.2
+docker compose exec ollama ollama pull qwen2.5-coder:1.5b
 docker compose exec ollama ollama pull nomic-embed-text
 
 # 3. Run Lab 1
@@ -47,6 +47,6 @@ See [WORKSHOP-BLUEPRINT.md](WORKSHOP-BLUEPRINT.md) for the full facilitator guid
 | AI Layer | Spring AI 2.0.0-M4 |
 | Agents | Embabel 0.3.4 |
 | Tools | Spring AI MCP Client |
-| LLM | Ollama + Llama 3.2 |
+| LLM | Ollama + qwen2.5-coder:1.5b |
 | Embeddings | nomic-embed-text |
-| Vector DB | Qdrant |
+| Vector DB | Redis Stack (RediSearch) |

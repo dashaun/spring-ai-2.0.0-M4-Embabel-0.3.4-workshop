@@ -16,7 +16,7 @@ spring:
     ollama:
       base-url: http://localhost:11434
       chat:
-        model: llama3.2
+        model: qwen2.5-coder:1.5b
         options:
           temperature: 0.3          # Lower temperature for factual Q&A
           num-predict: 1024

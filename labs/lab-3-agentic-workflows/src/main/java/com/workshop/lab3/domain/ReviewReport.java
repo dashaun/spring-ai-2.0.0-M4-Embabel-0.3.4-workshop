@@ -6,5 +6,5 @@ package com.workshop.lab3.domain;
 public record ReviewReport(
         String title,
         String body,
-        String verdict
+        CodeAnalysisVerdict verdict
 ) {}

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Spring AI Agents Workshop</title>
+
+    <link rel="stylesheet" href="./reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="./reveal.js/dist/theme/simple.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="./reveal.js/dist/plugin/highlight/monokai.css">
+
+    <style>
+        .reveal {
+            font-size: 28px;
+        }
+        .reveal h1 {
+            font-size: 1.8em;
+        }
+        .reveal h2 {
+            font-size: 1.4em;
+        }
+        .reveal h3 {
+            font-size: 1.1em;
+        }
+        .reveal pre {
+            font-size: 0.55em;
+            width: 100%;
+        }
+        .reveal pre code {
+            max-height: 500px;
+            padding: 10px 15px;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+        .reveal code {
+            font-size: 0.9em;
+        }
+        .reveal ul, .reveal ol {
+            font-size: 0.85em;
+        }
+        .reveal table {
+            font-size: 0.75em;
+        }
+        .reveal p {
+            font-size: 0.9em;
+        }
+        .reveal section {
+            padding: 10px 20px;
+        }
+        .reveal blockquote {
+            font-size: 0.9em;
+        }
+    </style>
+
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+        <section data-markdown="README.md"
+                 data-separator="^]]]"
+                 data-separator-vertical="^---"
+                 data-separator-notes="^Notes:"
+                 data-charset="utf8">
+        </section>
+    </div>
+</div>
+
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/dist/plugin/markdown.js"></script>
+<script src="./reveal.js/dist/plugin/highlight.js"></script>
+<script src="./reveal.js/dist/plugin/notes.js"></script>
+
+<script>
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        hash: false,
+        width: 1200,
+        height: 800,
+        margin: 0.02,
+        plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+    });
+</script>
+</body>
+</html>

@@ -1,7 +1,8 @@
 package com.workshop.lab3.config;
 
+import com.embabel.agent.api.common.AgentPlatformTypedOps;
 import com.embabel.agent.core.AgentPlatform;
-import com.embabel.agent.domain.io.UserInput;
+import com.embabel.agent.core.ProcessOptions;
 import com.workshop.lab3.domain.CodeReviewRequest;
 import com.workshop.lab3.domain.ReviewReport;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,12 +30,15 @@ public class AgentConfig {
      * 1. Discover that CodeReviewAgent can produce a ReviewReport.
      * 2. Plan the action sequence: analyzeCode → writeReport.
      * 3. Execute each action, passing typed outputs between them.
+     *
+     * <p>Pass the {@link CodeReviewRequest} directly so the planner can see it
+     * on the blackboard and connect it to the {@code analyzeCode} action.
+     * Wrapping it in a {@code UserInput} would leave the planner with no path
+     * from UserInput → CodeReviewRequest → CodeAnalysis → ReviewReport (STUCK).</p>
      */
     @PostMapping("/review")
     public ReviewReport reviewCode(@RequestBody CodeReviewRequest request) {
-        return agentPlatform.runFor(
-                new UserInput(request.sourceCode()),
-                ReviewReport.class
-        );
+        return new AgentPlatformTypedOps(agentPlatform)
+                .transform(request, ReviewReport.class, ProcessOptions.DEFAULT);
     }
 }
