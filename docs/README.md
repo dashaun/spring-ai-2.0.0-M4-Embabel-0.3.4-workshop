@@ -2,7 +2,7 @@
 
 ### Building Your Local Developer Sidekick
 
-A hands-on workshop for Java developers
+[A hands-on workshop for Java developers](https://github.com/dashaun/spring-ai-2.0.0-M4-Embabel-0.3.4-workshop)
 
 ---
 
@@ -59,6 +59,7 @@ Notes:
 - Docker Compose v2
 - 8GB RAM (16 GB recommended)
 - A code editor / IDE
+- npx
 
 Notes:
 - Pre-pull Docker images during welcome: `docker compose pull`
@@ -69,6 +70,12 @@ Notes:
 ```
 
 ---
+
+```bash
+git clone https://github.com/dashaun/spring-ai-2.0.0-M4-Embabel-0.3.4-workshop
+cd spring-ai-2.0.0-M4-Embabel-0.3.4-workshop
+```
+
 
 ## Infrastructure Setup
 
