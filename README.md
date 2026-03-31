@@ -35,10 +35,6 @@ curl "http://localhost:8080/chat?message=Hello"
 - 16 GB RAM recommended (8 GB minimum)
 - No internet required after initial setup
 
-## Workshop Blueprint
-
-See [WORKSHOP-BLUEPRINT.md](WORKSHOP-BLUEPRINT.md) for the full facilitator guide, narrative arc, and timing.
-
 ## The Stack
 
 | Component | Technology |
