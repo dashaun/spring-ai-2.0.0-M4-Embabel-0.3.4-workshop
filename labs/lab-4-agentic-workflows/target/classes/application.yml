@@ -1,0 +1,29 @@
+# =============================================================================
+# Lab 4 — Agentic Workflows with Embabel
+# =============================================================================
+spring:
+  application:
+    name: lab-4-agentic-workflows
+
+  ai:
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        model: qwen2.5-coder:1.5b
+        options:
+          temperature: 0.4
+          num-predict: 4096
+          format: json
+
+# Embabel configuration
+embabel:
+    models:
+      default-llm: qwen2.5-coder:1.5b
+    # The platform automatically discovers @Agent beans in the Spring context.
+    # GOAP planner settings:
+    planning:
+      max-depth: 10              # Max actions in a single plan
+      timeout-seconds: 30        # Planning timeout
+
+server:
+  port: 8084

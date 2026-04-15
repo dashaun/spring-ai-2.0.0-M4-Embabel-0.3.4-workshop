@@ -1,0 +1,64 @@
+# =============================================================================
+# Lab 5 — Developer Sidekick: The Full Stack
+# =============================================================================
+spring:
+  application:
+    name: lab-5-developer-sidekick
+
+  # Jackson 3 (Spring Boot 4) is strict about control chars in JSON strings.
+  # Allow unescaped newlines so multiline curl payloads work out of the box.
+  jackson:
+    parser-features:
+      ALLOW_UNQUOTED_CONTROL_CHARS: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      username: default
+      password:
+
+  ai:
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        model: qwen2.5-coder:1.5b
+        options:
+          temperature: 0.3
+          num-predict: 4096
+      embedding:
+        model: nomic-embed-text
+
+    vectorstore:
+      redis:
+        index-name: sidekick-knowledge
+        initialize-schema: true
+
+    # -------------------------------------------------------------------------
+    # MCP Client Configuration — connects to the Lab 3 filesystem server
+    # -------------------------------------------------------------------------
+    # Lab 3 must be running on port 8083 before starting Lab 5.
+    # -------------------------------------------------------------------------
+    mcp:
+      client:
+        sse:
+          connections:
+            filesystem:
+              url: http://localhost:8083
+          active-connections:
+            - filesystem
+
+# Embabel configuration
+embabel:
+  models:
+    default-llm: qwen2.5-coder:1.5b
+  planning:
+    max-depth: 15
+    timeout-seconds: 60
+
+workshop:
+  docs:
+    path: classpath:docs/
+
+server:
+  port: 8085

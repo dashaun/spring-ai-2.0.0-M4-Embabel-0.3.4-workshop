@@ -1,0 +1,8 @@
+com/workshop/lab3/domain/CodeAnalysisVerdict.class
+com/workshop/lab3/domain/SecurityRiskLevel.class
+com/workshop/lab3/domain/CodeReviewRequest.class
+com/workshop/lab3/Lab3Application.class
+com/workshop/lab3/domain/ReviewReport.class
+com/workshop/lab3/domain/CodeAnalysis.class
+com/workshop/lab3/agent/CodeReviewAgent.class
+com/workshop/lab3/config/AgentConfig.class

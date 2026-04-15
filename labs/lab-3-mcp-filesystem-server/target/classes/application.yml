@@ -1,0 +1,20 @@
+# =============================================================================
+# Lab 3 — MCP Filesystem Server
+# =============================================================================
+spring:
+  application:
+    name: lab-3-mcp-filesystem-server
+
+  ai:
+    mcp:
+      server:
+        name: filesystem-server
+        version: 1.0.0
+
+# Workspace that this server operates in (sandboxed)
+workshop:
+  workspace:
+    path: ./workspace
+
+server:
+  port: 8083

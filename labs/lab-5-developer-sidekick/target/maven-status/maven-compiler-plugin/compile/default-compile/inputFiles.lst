@@ -1,0 +1,10 @@
+/Users/dashaun/fun/dashaun/spring-ai-2.0.0-M4-Embabel-0.3.4-workshop/labs/lab-5-developer-sidekick/src/main/java/com/workshop/lab4/Lab4Application.java
+/Users/dashaun/fun/dashaun/spring-ai-2.0.0-M4-Embabel-0.3.4-workshop/labs/lab-5-developer-sidekick/src/main/java/com/workshop/lab4/agent/DeveloperSidekickAgent.java
+/Users/dashaun/fun/dashaun/spring-ai-2.0.0-M4-Embabel-0.3.4-workshop/labs/lab-5-developer-sidekick/src/main/java/com/workshop/lab4/config/OllamaConfig.java
+/Users/dashaun/fun/dashaun/spring-ai-2.0.0-M4-Embabel-0.3.4-workshop/labs/lab-5-developer-sidekick/src/main/java/com/workshop/lab4/config/SidekickConfig.java
+/Users/dashaun/fun/dashaun/spring-ai-2.0.0-M4-Embabel-0.3.4-workshop/labs/lab-5-developer-sidekick/src/main/java/com/workshop/lab4/config/VectorStoreConfig.java
+/Users/dashaun/fun/dashaun/spring-ai-2.0.0-M4-Embabel-0.3.4-workshop/labs/lab-5-developer-sidekick/src/main/java/com/workshop/lab4/domain/GeneratedCode.java
+/Users/dashaun/fun/dashaun/spring-ai-2.0.0-M4-Embabel-0.3.4-workshop/labs/lab-5-developer-sidekick/src/main/java/com/workshop/lab4/domain/ProjectContext.java
+/Users/dashaun/fun/dashaun/spring-ai-2.0.0-M4-Embabel-0.3.4-workshop/labs/lab-5-developer-sidekick/src/main/java/com/workshop/lab4/domain/TaskRequest.java
+/Users/dashaun/fun/dashaun/spring-ai-2.0.0-M4-Embabel-0.3.4-workshop/labs/lab-5-developer-sidekick/src/main/java/com/workshop/lab4/domain/TaskResult.java
+/Users/dashaun/fun/dashaun/spring-ai-2.0.0-M4-Embabel-0.3.4-workshop/labs/lab-5-developer-sidekick/src/main/java/com/workshop/lab4/tools/FileSystemTools.java

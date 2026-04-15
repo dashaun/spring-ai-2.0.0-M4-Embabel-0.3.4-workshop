@@ -13,46 +13,168 @@
     <!-- Theme used for syntax highlighting of code -->
     <link rel="stylesheet" href="./reveal.js/dist/plugin/highlight/monokai.css">
 
+    <!-- Spring brand fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Work+Sans:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
+        :root {
+            --spring-green: #6db33f;
+            --spring-green-light: #80ea6e;
+            --spring-dark: #191e1e;
+            --spring-text: #4a4a4a;
+            --spring-heading: #111;
+            --spring-border: #ebf2f2;
+            --spring-border-medium: #d9e9e9;
+            --spring-link: #6db33f;
+            --spring-muted: #7a7a7a;
+        }
+
         .reveal {
+            font-family: 'Open Sans', BlinkMacSystemFont, -apple-system, sans-serif;
             font-size: 28px;
+            color: var(--spring-text);
         }
-        .reveal h1 {
-            font-size: 1.8em;
+
+        /* Headings */
+        .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5 {
+            font-family: 'Work Sans', sans-serif;
+            color: var(--spring-heading);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            text-transform: none;
         }
-        .reveal h2 {
-            font-size: 1.4em;
+        .reveal h1 { font-size: 2.2em; }
+        .reveal h2 { font-size: 1.5em; }
+        .reveal h3 { font-size: 1.15em; font-weight: 600; }
+
+        /* Spring green accent bar at the top */
+        .reveal .slides {
+            border-top: 4px solid var(--spring-green);
         }
-        .reveal h3 {
-            font-size: 1.1em;
+
+        /* Links */
+        .reveal a {
+            color: var(--spring-link);
         }
+        .reveal a:hover {
+            color: var(--spring-dark);
+        }
+
+        /* Code blocks - Spring terminal style */
         .reveal pre {
             font-size: 0.55em;
             width: 100%;
+            border-radius: 5px;
+            box-shadow: 0 8px 15px 0 rgba(0,0,0,0.15);
         }
         .reveal pre code {
             max-height: 500px;
-            padding: 10px 15px;
+            padding: 16px 20px;
             word-wrap: break-word;
             white-space: pre-wrap;
+            background: var(--spring-dark);
+            border-radius: 5px;
         }
         .reveal code {
             font-size: 0.9em;
+            color: var(--spring-green);
         }
+
+        /* Lists */
         .reveal ul, .reveal ol {
             font-size: 0.85em;
         }
+        .reveal li {
+            margin-bottom: 0.3em;
+        }
+
+        /* Tables */
         .reveal table {
             font-size: 0.75em;
+            border-collapse: collapse;
         }
+        .reveal table th {
+            background: var(--spring-green);
+            color: #fff;
+            font-family: 'Work Sans', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 0.05em;
+            padding: 10px 16px;
+            border: none;
+        }
+        .reveal table td {
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--spring-border);
+        }
+        .reveal table tr:nth-child(even) td {
+            background: #f9fdf7;
+        }
+
+        /* Paragraphs */
         .reveal p {
             font-size: 0.9em;
         }
+
+        /* Sections */
         .reveal section {
             padding: 10px 20px;
         }
+
+        /* Blockquotes - Spring style */
         .reveal blockquote {
             font-size: 0.9em;
+            border-left: 4px solid var(--spring-green);
+            background: #f9fdf7;
+            padding: 16px 24px;
+            border-radius: 0 5px 5px 0;
+            box-shadow: none;
+            font-style: normal;
+        }
+
+        /* Section divider slides — Spring green */
+        .reveal section[data-background-color="#6db33f"] h1,
+        .reveal section[data-background-color="#6db33f"] h2,
+        .reveal section[data-background-color="#6db33f"] h3,
+        .reveal section[data-background-color="#6db33f"] p {
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Section divider slides — Spring dark */
+        .reveal section[data-background-color="#191e1e"] h1,
+        .reveal section[data-background-color="#191e1e"] h2,
+        .reveal section[data-background-color="#191e1e"] h3,
+        .reveal section[data-background-color="#191e1e"] p {
+            color: #fff;
+        }
+
+        /* Strong/bold */
+        .reveal strong {
+            color: var(--spring-heading);
+            font-weight: 700;
+        }
+
+        /* Progress bar */
+        .reveal .progress {
+            color: var(--spring-green);
+            height: 4px;
+        }
+
+        /* Controls */
+        .reveal .controls {
+            color: var(--spring-green);
+        }
+
+        /* Slide number */
+        .reveal .slide-number {
+            font-family: 'Work Sans', sans-serif;
+            font-size: 14px;
+            color: var(--spring-muted);
+            background: transparent;
         }
     </style>
 
@@ -60,12 +182,63 @@
 <body>
 <div class="reveal">
     <div class="slides">
-        <section data-markdown="README.md"
-                 data-separator="^]]]"
+
+        <!-- Intro: overview, prerequisites, infrastructure -->
+        <section data-markdown="intro.md"
+                 data-separator="^\f"
                  data-separator-vertical="^---"
                  data-separator-notes="^Notes:"
                  data-charset="utf8">
         </section>
+
+        <!-- Lab 1: Hello LLM -->
+        <section data-markdown="lab1.md"
+                 data-separator="^\f"
+                 data-separator-vertical="^---"
+                 data-separator-notes="^Notes:"
+                 data-charset="utf8">
+        </section>
+
+        <!-- Lab 2: RAG Agent -->
+        <section data-markdown="lab2.md"
+                 data-separator="^\f"
+                 data-separator-vertical="^---"
+                 data-separator-notes="^Notes:"
+                 data-charset="utf8">
+        </section>
+
+        <!-- Lab 3: MCP Filesystem Server -->
+        <section data-markdown="lab3.md"
+                 data-separator="^\f"
+                 data-separator-vertical="^---"
+                 data-separator-notes="^Notes:"
+                 data-charset="utf8">
+        </section>
+
+        <!-- Lab 4: Agentic Workflows -->
+        <section data-markdown="lab4.md"
+                 data-separator="^\f"
+                 data-separator-vertical="^---"
+                 data-separator-notes="^Notes:"
+                 data-charset="utf8">
+        </section>
+
+        <!-- Lab 5: Developer Sidekick -->
+        <section data-markdown="lab5.md"
+                 data-separator="^\f"
+                 data-separator-vertical="^---"
+                 data-separator-notes="^Notes:"
+                 data-charset="utf8">
+        </section>
+
+        <!-- Outro: recap, next steps, thank you -->
+        <section data-markdown="outro.md"
+                 data-separator="^\f"
+                 data-separator-vertical="^---"
+                 data-separator-notes="^Notes:"
+                 data-charset="utf8">
+        </section>
+
     </div>
 </div>
 
@@ -80,7 +253,8 @@
         progress: true,
         history: true,
         center: true,
-        hash: false,
+        hash: true,
+        slideNumber: true,
         width: 1200,
         height: 800,
         margin: 0.02,
