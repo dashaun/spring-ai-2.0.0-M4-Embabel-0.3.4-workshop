@@ -10,6 +10,7 @@ spring:
       server:
         name: filesystem-server
         version: 1.0.0
+        protocol: STREAMABLE
 
 # Workspace that this server operates in (sandboxed)
 workshop:
@@ -18,3 +19,10 @@ workshop:
 
 server:
   port: 8083
+  tomcat:
+    # Flush SSE events immediately — without this, Tomcat's NIO connector buffers
+    # the initial SSE event and the MCP client never receives it.
+    use-relative-redirects: false
+  servlet:
+    async:
+      timeout: 60000

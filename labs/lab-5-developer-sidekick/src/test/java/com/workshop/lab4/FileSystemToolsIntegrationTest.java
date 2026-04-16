@@ -1,69 +1,109 @@
 package com.workshop.lab4;
 
 import com.workshop.lab4.tools.FileSystemTools;
+import io.modelcontextprotocol.client.McpSyncClient;
+import io.modelcontextprotocol.spec.McpSchema;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
- * Integration test for the Lab 4 Developer Sidekick.
+ * Integration test for Lab 5's {@link FileSystemTools} MCP client adapter.
  *
- * <p>Validates that the {@link FileSystemTools} can list, read, and write
- * files within the sandbox, and that path traversal is blocked.</p>
- *
- * <p>Uses a minimal Spring context — only the {@link FileSystemTools} bean
- * is needed, so heavy infrastructure (Ollama, Redis, MCP) is disabled.</p>
+ * <p>Uses a mocked {@link McpSyncClient} so tests run without Lab 3.
+ * The real MCP integration is validated by starting both labs together.</p>
  */
-@SpringBootTest(
-        classes = FileSystemTools.class,
-        properties = "workshop.workspace.path=./workspace"
-)
+@SpringBootTest(classes = {FileSystemTools.class, FileSystemToolsIntegrationTest.TestConfig.class})
 class FileSystemToolsIntegrationTest {
+
+    @Configuration
+    static class TestConfig {
+        @Bean
+        McpSyncClient mcpSyncClient() {
+            McpSyncClient mock = mock(McpSyncClient.class);
+
+            // list_files response
+            when(mock.callTool(new McpSchema.CallToolRequest("list_files", Map.of("path", "sample-project"))))
+                    .thenReturn(new McpSchema.CallToolResult(
+                            List.of(new McpSchema.TextContent("pom.xml\nsrc/main/java/com/example/GreetingController.java")),
+                            false));
+
+            // read_file response
+            when(mock.callTool(new McpSchema.CallToolRequest("read_file", Map.of("path", "sample-project/pom.xml"))))
+                    .thenReturn(new McpSchema.CallToolResult(
+                            List.of(new McpSchema.TextContent("<groupId>com.example</groupId>\n<artifactId>spring-boot-starter-web</artifactId>")),
+                            false));
+
+            // write_file response
+            when(mock.callTool(any(McpSchema.CallToolRequest.class)))
+                    .thenAnswer(invocation -> {
+                        McpSchema.CallToolRequest req = invocation.getArgument(0);
+                        if ("write_file".equals(req.name())) {
+                            return new McpSchema.CallToolResult(
+                                    List.of(new McpSchema.TextContent("File written successfully")),
+                                    false);
+                        }
+                        // fallback for unmatched
+                        return new McpSchema.CallToolResult(List.of(), false);
+                    });
+
+            // Re-stub specific calls after the catch-all
+            when(mock.callTool(new McpSchema.CallToolRequest("list_files", Map.of("path", "sample-project"))))
+                    .thenReturn(new McpSchema.CallToolResult(
+                            List.of(new McpSchema.TextContent("pom.xml\nsrc/main/java/com/example/GreetingController.java")),
+                            false));
+            when(mock.callTool(new McpSchema.CallToolRequest("read_file", Map.of("path", "sample-project/pom.xml"))))
+                    .thenReturn(new McpSchema.CallToolResult(
+                            List.of(new McpSchema.TextContent("<groupId>com.example</groupId>\n<artifactId>spring-boot-starter-web</artifactId>")),
+                            false));
+
+            return mock;
+        }
+    }
 
     @Autowired
     FileSystemTools fileSystemTools;
 
     @Test
-    void listProjectFiles_returnsSampleProjectFiles() throws Exception {
+    void listProjectFiles_returnsSampleProjectFiles() {
         String files = fileSystemTools.listProjectFiles("sample-project");
 
         assertThat(files).contains("pom.xml");
         assertThat(files).contains("GreetingController.java");
 
-        System.out.println("\n=== Lab 4 Project Files ===");
+        System.out.println("\n=== Lab 5 Project Files (via MCP mock) ===");
         System.out.println(files);
     }
 
     @Test
-    void readFile_returnsPomContent() throws Exception {
+    void readFile_returnsPomContent() {
         String content = fileSystemTools.readFile("sample-project/pom.xml");
 
         assertThat(content).contains("<groupId>com.example</groupId>");
         assertThat(content).contains("spring-boot");
 
-        System.out.println("\n=== Lab 4 pom.xml (first 200 chars) ===");
-        System.out.println(content.substring(0, Math.min(200, content.length())));
+        System.out.println("\n=== Lab 5 pom.xml (via MCP mock) ===");
+        System.out.println(content);
     }
 
     @Test
-    void writeFile_andReadBack() throws Exception {
-        String testContent = "// Generated by integration test\npublic class TestFile {}";
-        fileSystemTools.writeFile("sample-project/src/main/java/com/example/TestFile.java", testContent);
+    void writeFile_returnsConfirmation() {
+        String result = fileSystemTools.writeFile(
+                "sample-project/src/main/java/com/example/TestFile.java",
+                "// Generated by test\npublic class TestFile {}");
 
-        String readBack = fileSystemTools.readFile("sample-project/src/main/java/com/example/TestFile.java");
-        assertThat(readBack).isEqualTo(testContent);
+        assertThat(result).contains("File written");
 
-        System.out.println("\n=== Lab 4 Write/Read Verified ===");
-    }
-
-    @Test
-    void pathTraversal_isBlocked() {
-        assertThatThrownBy(() -> fileSystemTools.readFile("../../etc/passwd"))
-                .isInstanceOf(SecurityException.class)
-                .hasMessageContaining("sandbox");
+        System.out.println("\n=== Lab 5 Write Verified (via MCP mock) ===");
     }
 }

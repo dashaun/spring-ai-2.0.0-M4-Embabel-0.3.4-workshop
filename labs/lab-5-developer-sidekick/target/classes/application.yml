@@ -38,15 +38,14 @@ spring:
     # MCP Client Configuration — connects to the Lab 3 filesystem server
     # -------------------------------------------------------------------------
     # Lab 3 must be running on port 8083 before starting Lab 5.
+    # Uses Streamable HTTP transport (not SSE) for compatibility.
     # -------------------------------------------------------------------------
     mcp:
       client:
-        sse:
+        streamable-http:
           connections:
             filesystem:
               url: http://localhost:8083
-          active-connections:
-            - filesystem
 
 # Embabel configuration
 embabel:
